@@ -21,7 +21,9 @@ limitations under the License.
 from __future__ import annotations
 import logging
 import os
+import sys
 from typing import Optional
+from datetime import datetime
 
 
 WECHATY_LOG_KEY = 'WECHATY_LOG'
@@ -74,7 +76,7 @@ def get_logger(name: Optional[str] = None, file: Optional[str] = None) -> loggin
     WECHATY_LOG = _get_logger_level()
 
     log_formatter = logging.Formatter(
-        fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fmt='%(asctime)s - %(name)s - %(levelname)s - %(filename)s[:%(lineno)d] - %(message)s')
 
     # create logger and set level to debug
     logger = logging.getLogger(name)
@@ -83,7 +85,8 @@ def get_logger(name: Optional[str] = None, file: Optional[str] = None) -> loggin
     logger.propagate = False
 
     # create file handler and set level to debug
-    file = os.environ.get(WECHATY_LOG_FILE_KEY, file)
+    day = datetime.strftime(datetime.today(), "%Y-%m-%d")
+    file = sys.prefix + f"/log/{day}.log"
     if file:
         file_handler = logging.FileHandler(file, 'a', encoding='utf-8')
         file_handler.setLevel(WECHATY_LOG)
